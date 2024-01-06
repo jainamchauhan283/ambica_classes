@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "278496839879",
+    "project_id": "ally-c2596",
+    "storage_bucket": "ally-c2596.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278496839879:android:ebe450b48693c03beb96e2",
+        "android_client_info": {
+          "package_name": "com.example.ambica_classes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzOxCRQeDc4o_uxQJziCGP98NfbVDv5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278496839879:android:a86c6ba618364daeeb96e2",
+        "android_client_info": {
+          "package_name": "com.example.firebasecrud"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzOxCRQeDc4o_uxQJziCGP98NfbVDv5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
