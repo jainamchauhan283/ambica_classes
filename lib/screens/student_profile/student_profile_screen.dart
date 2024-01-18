@@ -1,20 +1,25 @@
+import 'package:ambica_classes/screens/addStudent/add_student_controller.dart';
+import 'package:ambica_classes/screens/addStudent/add_tab_controller.dart';
+import 'package:ambica_classes/screens/edit_student/edit_inquiry_screen.dart';
 import 'package:ambica_classes/screens/edit_student/edit_tab_screen.dart';
 import 'package:ambica_classes/utils/colors.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'addStudent/add_student_controller.dart';
 
 class StudentProfileScreen extends StatelessWidget {
   final Map<String, dynamic> data;
 
-  StudentProfileScreen({super.key, required this.data});
+  StudentProfileScreen({Key? key, required this.data}) : super(key: key);
 
-  AddStudentController addStudentController = Get.put(AddStudentController());
+  final TabBarController tabBarController = Get.put(TabBarController());
+
+  // final StudentProfileController controller =
+  //     Get.put(StudentProfileController());
 
   @override
   Widget build(BuildContext context) {
+    // final data = controller.data;
+
     return Scaffold(
       backgroundColor: tabColor,
       appBar: AppBar(
@@ -23,28 +28,11 @@ class StudentProfileScreen extends StatelessWidget {
         title: Text("Student's Profile"),
         actions: [
           IconButton(
-            onPressed: () async {
-              // try {
-              //   CollectionReference ref = FirebaseFirestore.instance.collection("student");
-              //   await ref.doc(data['Id']).delete();
-              //   print('Document deleted successfully');
-              // } catch (e) {
-              //   print('Error deleting document: $e');
-              // }
-            },
+            onPressed: () {},
             icon: Icon(Icons.delete),
           ),
           IconButton(
-            onPressed: () {
-              // CollectionReference ref = FirebaseFirestore.instance.collection(
-              //     "student");
-              // ref.doc(data['Id']).delete();
-              // if (data['type'] == 'inq') {
-              //   Get.to(EditTabScreen(data: data));
-              // } else {
-              //   Get.to(EditTabScreen(data: data,));
-              // }
-            },
+            onPressed: () {},
             icon: Icon(Icons.edit),
           ),
         ],
@@ -56,7 +44,7 @@ class StudentProfileScreen extends StatelessWidget {
         ),
         child: Padding(
           padding:
-          const EdgeInsets.only(left: 20, top: 7, right: 50, bottom: 10),
+              const EdgeInsets.only(left: 20, top: 7, right: 50, bottom: 10),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +52,6 @@ class StudentProfileScreen extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      // color: Colors.green,
                       child: Column(
                         children: [
                           const SizedBox(height: 5),
@@ -80,24 +67,27 @@ class StudentProfileScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 5),
                           Container(
-                            width: 80,
+                            width: MediaQuery.of(context).size.width * 0.25,
                             margin: const EdgeInsets.only(left: 10, right: 10),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(10)),
-                              color: data['type'] == 'inq' ? Colors.red : Colors
-                                  .green,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: data['type'] == 'inq'
+                                  ? Colors.red
+                                  : Colors.green,
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                textAlign: TextAlign.center,
                                 data['type'] == 'inq' ? 'Inquiry' : 'Admission',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 5),
+                          SizedBox(height: 5),
                         ],
                       ),
                     ),

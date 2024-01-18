@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:random_string/random_string.dart';
 
 class AddStudentController extends GetxController {
   var stdName = TextEditingController();
@@ -38,8 +39,12 @@ class AddStudentController extends GetxController {
   var stdGMail = TextEditingController();
   var stdGNumber = TextEditingController();
 
-  uploadData() async {
+  uploadData(String type) async {
+    // List type = ['inq', 'adm'];
+    String id = randomAlphaNumeric(10);
     Map<String, dynamic> uploaddata = {
+      "type" : type,
+      "Id" : id,
       "std_name": stdName.text,
       "std_branch": stdBranch.text,
       "std_sem": stdSem.text,

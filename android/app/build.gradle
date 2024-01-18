@@ -66,5 +66,5 @@ flutter {
 }
 
 dependencies {
-    'com.android.support:multidex:1.0.1'
+//    'com.android.support:multidex:1.0.1'
 }

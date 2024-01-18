@@ -1,30 +1,28 @@
-import 'package:ambica_classes/screens/addStudent/add_student_controller.dart';
-import 'package:ambica_classes/screens/login_profile_screen.dart';
+import 'dart:io';
+
+import 'package:ambica_classes/2/screens/add_student/add_student_controller.dart';
+import 'package:ambica_classes/2/widgets/image_picker.dart';
 import 'package:ambica_classes/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
-class AddStudentScreen extends StatelessWidget {
-  AddStudentScreen({super.key});
+class StdInquiryScreen extends StatelessWidget {
+  StdInquiryScreen({Key? key}) : super(key: key);
 
-  AddStudentController addStudentController = Get.put(AddStudentController());
-  String imageUrl = '';
+  final AddStdController addStdController = Get.put(AddStdController());
+  File? imagefile;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: tabColor,
-      appBar: AppBar(
-        backgroundColor: tabColor,
-        title: Text('Add Student'),
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Form(
+        key: addStdController.formKey,
         child: Container(
           padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
           decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Column(
@@ -33,65 +31,82 @@ class AddStudentScreen extends StatelessWidget {
               Row(
                 children: [
                   InkWell(
-                    child: CircleAvatar(
-                      backgroundColor: Colors.grey.shade300,
-                      radius: 45,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.camera_alt,
-                            color: Colors.black45,
-                          ),
-                          Text(
-                            'Student Photo',
-                            style: TextStyle(
-                              color: Colors.black45,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                    onTap: () {
+                      showPhotoOptions(context);
+                    },
+                    child: Obx(
+                      () => CircleAvatar(
+                        radius: 60,
+                        backgroundImage:
+                            (addStdController.imagefile.value != null)
+                                ? FileImage(addStdController.imagefile.value!)
+                                : null,
+                        child: (addStdController.imagefile.value == null)
+                            ? const Icon(Icons.person)
+                            : null,
                       ),
                     ),
-                    onTap: () {},
                   ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          TextField(
-                            controller: addStudentController.stdName,
+                          TextFormField(
+                            controller: addStdController.name,
                             decoration: InputDecoration(
-                              hintText: "Student's Name",
+                              hintText: "Student's Name*",
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter the student\'s name';
+                              }
+                              return null;
+                            },
                           ),
-                          TextField(
-                            controller: addStudentController.stdBranch,
+                          TextFormField(
+                            controller: addStdController.branch,
                             decoration: InputDecoration(
-                              hintText: "Student's Branch",
+                              hintText: "Student's Branch*",
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter the student\'s branch';
+                              }
+                              return null;
+                            },
                           ),
                           Row(
                             children: [
                               Expanded(
-                                child: TextField(
-                                  controller: addStudentController.stdSem,
+                                child: TextFormField(
+                                  controller: addStdController.sem,
                                   decoration: InputDecoration(
-                                    hintText: 'Semester',
+                                    hintText: 'Semester*',
                                   ),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter the semester';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               SizedBox(width: 20),
                               Expanded(
-                                child: TextField(
-                                  controller: addStudentController.stdYear,
+                                child: TextFormField(
+                                  controller: addStdController.year,
                                   decoration: InputDecoration(
-                                    hintText: 'Year',
+                                    hintText: 'Year*',
                                   ),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter the year';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                             ],
@@ -102,43 +117,61 @@ class AddStudentScreen extends StatelessWidget {
                   )
                 ],
               ),
-              TextField(
+              TextFormField(
+                controller: addStdController.mail,
                 decoration: InputDecoration(
-                  hintText: "Student’s Email",
+                  hintText: "Student's Email*",
                 ),
                 keyboardType: TextInputType.emailAddress,
-                controller: addStudentController.stdMail,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the student\'s Email';
+                  }
+                  return null;
+                },
               ),
-              TextField(
+              TextFormField(
+                controller: addStdController.number,
                 decoration: InputDecoration(
-                  hintText: "Student’s Number",
+                  hintText: "Student's Number*",
                 ),
-                controller: addStudentController.stdNumber,
                 keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the student\'s number';
+                  }
+                  return null;
+                },
               ),
-              TextField(
+              TextFormField(
+                controller: addStdController.uni,
                 decoration: InputDecoration(
-                  hintText: "University/Institute",
+                  hintText: "University/Institute*",
                 ),
-                controller: addStudentController.stdUni,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter University/Institute Name';
+                  }
+                  return null;
+                },
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student’s Address Line 1",
                 ),
-                controller: addStudentController.stdAdd1,
+                controller: addStdController.add1,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student’s Address Line 2",
                 ),
-                controller: addStudentController.stdAdd2,
+                controller: addStdController.add2,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student’s Address Line 3",
                 ),
-                controller: addStudentController.stdAdd3,
+                controller: addStdController.add3,
               ),
               Row(
                 children: [
@@ -147,7 +180,7 @@ class AddStudentScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: "Student's City",
                       ),
-                      controller: addStudentController.stdCity,
+                      controller: addStdController.city,
                     ),
                   ),
                   SizedBox(width: 20),
@@ -156,7 +189,7 @@ class AddStudentScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: 'Zip Code',
                       ),
-                      controller: addStudentController.stdZip,
+                      controller: addStdController.zip,
                     ),
                   ),
                 ],
@@ -168,7 +201,7 @@ class AddStudentScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: 'State',
                       ),
-                      controller: addStudentController.stdState,
+                      controller: addStdController.state,
                     ),
                   ),
                   SizedBox(width: 20),
@@ -177,7 +210,7 @@ class AddStudentScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: 'Country',
                       ),
-                      controller: addStudentController.stdCountry,
+                      controller: addStdController.country,
                     ),
                   ),
                 ],
@@ -189,7 +222,7 @@ class AddStudentScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: 'Course',
                       ),
-                      controller: addStudentController.stdCourse,
+                      controller: addStdController.course,
                     ),
                   ),
                   SizedBox(width: 20),
@@ -206,26 +239,26 @@ class AddStudentScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "Student's Father Name",
                 ),
-                controller: addStudentController.stdFName,
+                controller: addStdController.f_name,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Father Occupation",
                 ),
-                controller: addStudentController.stdFOcu,
+                controller: addStdController.f_occu,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Father Email",
                 ),
-                controller: addStudentController.stdFMail,
+                controller: addStdController.f_mail,
                 keyboardType: TextInputType.emailAddress,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Father Number",
                 ),
-                controller: addStudentController.stdFNumber,
+                controller: addStdController.f_number,
                 keyboardType: TextInputType.phone,
               ),
               SizedBox(height: 10),
@@ -239,26 +272,26 @@ class AddStudentScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "Student's Mother Name",
                 ),
-                controller: addStudentController.stdMName,
+                controller: addStdController.m_name,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Mother Occupation",
                 ),
-                controller: addStudentController.stdMOcu,
+                controller: addStdController.m_occu,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Mother Email",
                 ),
-                controller: addStudentController.stdMMail,
+                controller: addStdController.m_mail,
                 keyboardType: TextInputType.emailAddress,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Mother Number",
                 ),
-                controller: addStudentController.stdMNumber,
+                controller: addStdController.m_number,
                 keyboardType: TextInputType.phone,
               ),
               SizedBox(height: 10),
@@ -272,32 +305,33 @@ class AddStudentScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "Student's Guardian Name",
                 ),
-                controller: addStudentController.stdGName,
+                controller: addStdController.g_name,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Guardian Occupation",
                 ),
-                controller: addStudentController.stdGOcu,
+                controller: addStdController.g_occu,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Guardian Email",
                 ),
-                controller: addStudentController.stdGMail,
+                controller: addStdController.g_mail,
                 keyboardType: TextInputType.emailAddress,
               ),
               TextField(
                 decoration: InputDecoration(
                   hintText: "Student's Guardian Number",
                 ),
-                controller: addStudentController.stdGNumber,
+                controller: addStdController.g_number,
                 keyboardType: TextInputType.phone,
               ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // cancel button
                   SizedBox(
                     width: size.width * 0.35,
                     height: 50,
@@ -305,28 +339,25 @@ class AddStudentScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: redColor,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              20), // Adjust the border radius as needed
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: () => Navigator.pop(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginProfileScreen(),
-                        ),
-                      ),
+                      onPressed: () {},
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Icon(Icons.close, size: 20),
-                          Text("Cancel",
-                              style: TextStyle(
-                                fontSize: 20,
-                              )),
+                          Text(
+                            "Cancel",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
+                  // save button
                   SizedBox(
                     width: size.width * 0.35,
                     height: 50,
@@ -334,32 +365,88 @@ class AddStudentScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: tabColor,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              20), // Adjust the border radius as needed
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                       onPressed: () {
-                        addStudentController.uploadData();
-                        Get.back();
+                        if (addStdController.formKey.currentState?.validate() ?? false) {
+                          addStdController.addStudent('inq');
+                          addStdController.clearData();
+                          Fluttertoast.showToast(
+                            msg: "Student inserted successfully!",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.grey,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                          Get.back();
+                        }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Icon(Icons.add, size: 20),
-                          Text("Save",
-                              style: TextStyle(
-                                fontSize: 20,
-                              )),
+                          Text(
+                            "Save",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void showPhotoOptions(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Upload Profile Picture"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    imageSelect(ImageSource.gallery);
+                  },
+                  leading: Icon(Icons.photo_album),
+                  title: Text("Select from gallery"),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    imageSelect(ImageSource.camera);
+                  },
+                  leading: Icon(Icons.camera_alt),
+                  title: Text("Select from camera"),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  void imageSelect(ImageSource source) async {
+    XFile? pickedImage = await ImagePicker().pickImage(source: source);
+
+    if (pickedImage != null) {
+      File imageFile = File(pickedImage.path);
+      addStdController.setImageFile(imageFile);
+    }
   }
 }

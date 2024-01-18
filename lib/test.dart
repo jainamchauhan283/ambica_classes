@@ -1,72 +1,129 @@
-// import 'dart:io';
-//
-// import 'package:ambica_classes/firebase_options.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:ambica_classes/2/services/firebase_operations.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 //
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   runApp(MyApp());
-// }
-//
-// class FirebaseStorageService {
-//   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-//   final ImagePicker _picker = ImagePicker();
-//
-//   Future<String?> uploadImageToFirebase() async {
-//     final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
-//
-//     if (pickedImage == null) return null;
-//
-//     File imageFile = File(pickedImage.path);
-//     String fileName = DateTime.now().millisecondsSinceEpoch.toString(); // Unique filename
-//
-//     try {
-//       UploadTask uploadTask = _firebaseStorage.ref('images/$fileName').putFile(imageFile);
-//       TaskSnapshot taskSnapshot = await uploadTask;
-//       String imageUrl = await taskSnapshot.ref.getDownloadURL();
-//
-//       return imageUrl;
-//     } catch (e) {
-//       print("Error uploading image: $e");
-//       return null;
-//     }
-//   }
-// }
-//
-// class MyApp extends StatelessWidget {
-//   final FirebaseStorageService storageService = FirebaseStorageService();
+// class FirstScreen extends StatelessWidget {
+//   final FireOperations fireOperations = FireOperations();
+//   final TextEditingController _orgCodeController = TextEditingController();
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(
-//           title: Text('Image Upload to Firebase'),
+//     return Scaffold(
+//       appBar: AppBar(title: Text('First Screen')),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             TextField(
+//               controller: _orgCodeController,
+//               decoration: InputDecoration(labelText: 'Enter Organization Code'),
+//             ),
+//             SizedBox(height: 16.0),
+//             ElevatedButton(
+//               onPressed: () async {
+//                 String orgCode = _orgCodeController.text;
+//                 bool orgCodeExists = await fireOperations.checkOrgCodeExists(orgCode);
+//
+//                 if (orgCodeExists) {
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (context) => SecondScreen(
+//                         orgCode: orgCode,
+//                       ),
+//                     ),
+//                   );
+//                 } else {
+//                   Fluttertoast.showToast(
+//                     msg: "Organization code does not exist",
+//                     toastLength: Toast.LENGTH_SHORT,
+//                     gravity: ToastGravity.CENTER,
+//                     timeInSecForIosWeb: 1,
+//                     backgroundColor: Colors.grey,
+//                     textColor: Colors.white,
+//                     fontSize: 16.0,
+//                   );
+//                 }
+//               },
+//               child: Text('Next'),
+//             ),
+//           ],
 //         ),
-//         body: Center(
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               ElevatedButton(
-//                 onPressed: () async {
-//                   String? imageUrl = await storageService.uploadImageToFirebase();
-//                   if (imageUrl != null) {
-//                     print('Image uploaded. URL: $imageUrl');
-//                   } else {
-//                     print('Image upload failed.');
-//                   }
-//                 },
-//                 child: Text('Pick and Upload Image'),
-//               ),
-//             ],
-//           ),
+//       ),
+//     );
+//   }
+// }
+//
+//
+// class SecondScreen extends StatelessWidget {
+//   final String orgCode;
+//
+//   SecondScreen({required this.orgCode});
+//
+//   final FireOperations fireOperations = FireOperations();
+//   final TextEditingController _mobileNumberController = TextEditingController();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Second Screen')),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             TextField(
+//               controller: _mobileNumberController,
+//               decoration: InputDecoration(labelText: 'Enter Mobile Number'),
+//             ),
+//             SizedBox(height: 16.0),
+//             ElevatedButton(
+//               onPressed: () async {
+//                 String mobileNumber = _mobileNumberController.text;
+//                 bool mobileNumberExists =
+//                 await fireOperations.checkMobileNumberExists(orgCode, mobileNumber);
+//
+//                 if (mobileNumberExists) {
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (context) => ThirdScreen(
+//                         mobileNumber: mobileNumber,
+//                       ),
+//                     ),
+//                   );
+//                 } else {
+//                   Fluttertoast.showToast(
+//                     msg: "Mobile number does not exist in the user's collection",
+//                     toastLength: Toast.LENGTH_SHORT,
+//                     gravity: ToastGravity.CENTER,
+//                     timeInSecForIosWeb: 1,
+//                     backgroundColor: Colors.grey,
+//                     textColor: Colors.white,
+//                     fontSize: 16.0,
+//                   );
+//                 }
+//               },
+//               child: Text('Next'),
+//             ),
+//           ],
 //         ),
+//       ),
+//     );
+//   }
+// }
+//
+// class ThirdScreen extends StatelessWidget {
+//   final String mobileNumber;
+//
+//   ThirdScreen({required this.mobileNumber});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Third Screen')),
+//       body: Center(
+//         child: Text('Student list for Mobile Number: $mobileNumber'),
 //       ),
 //     );
 //   }

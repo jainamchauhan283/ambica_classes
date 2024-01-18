@@ -1,40 +1,34 @@
-// import 'package:flutter/material.dart';
-//
-// class ShowImagePicker extends StatelessWidget {
-//   const ShowImagePicker({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text('Select Image'),
-//           content: SingleChildScrollView(
-//             child: ListBody(
-//               children: <Widget>[
-//                 GestureDetector(
-//                   child: Text('Take a picture'),
-//                   onTap: () {
-//                     controller.getImage(ImageSource.camera);
-//                     Navigator.pop(context);
-//                   },
-//                 ),
-//                 Padding(
-//                   padding: EdgeInsets.all(8.0),
-//                 ),
-//                 GestureDetector(
-//                   child: Text('Choose from gallery'),
-//                   onTap: () {
-//                     controller.getImage(ImageSource.gallery);
-//                     Navigator.pop(context);
-//                   },
-//                 ),
-//               ],
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'dart:convert';
+
+class ImagePickController extends GetxController {
+  final RxString _pickedImagePath = ''.obs;
+  final RxString _base64Image = ''.obs;
+
+  String get pickedImagePath => _pickedImagePath.value;
+
+  String get base64Image => _base64Image.value;
+
+  Future<void> pickImage(ImageSource source) async {
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        _pickedImagePath.value = pickedFile.path;
+        _base64Image.value = '';
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+    }
+  }
+
+  void convertToBase64() {
+    if (_pickedImagePath.isNotEmpty) {
+      final File imageFile = File(_pickedImagePath.value);
+      final List<int> imageBytes = imageFile.readAsBytesSync();
+      final String base64ImageValue = base64Encode(imageBytes);
+      _base64Image.value = base64ImageValue;
+    }
+  }
+}
